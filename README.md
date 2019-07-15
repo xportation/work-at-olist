@@ -12,3 +12,6 @@ Run the app.py
 python app.py
 ```  
 
+## Deploy to Heroku
+The deploy is done directly from the Heroku app connect to my repository  
+https://workatolist-lvs.herokuapp.com
