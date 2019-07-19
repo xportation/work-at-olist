@@ -21,8 +21,9 @@ class Fare(Base):
 class Call(Base):
     __tablename__ = 'call'
 
-    uuid = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    id = Column(Integer, primary_key=True, nullable=False)
+    call_id = Column(Integer, unique=True, nullable=False)
     start_timestamp = Column(DateTime, nullable=True)
-    origin_phone = Column(String(11), nullable=False)
-    destination_phone = Column(String(11), nullable=False)
+    origin_phone = Column(String(11), nullable=True)
+    destination_phone = Column(String(11), nullable=True)
     end_timestamp = Column(DateTime, nullable=True)

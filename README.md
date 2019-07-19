@@ -28,3 +28,12 @@ Running migrations to head:
 Running migrations to previous revision:  
 `alembic downgrade -1`  
 
+## Testing ##
+Running the tests needs to install the `requirements-dev.txt`
+```
+pip install -r requirements-dev.txt
+```
+Command for running:
+```
+pytest -v
+```
