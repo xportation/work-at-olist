@@ -12,6 +12,28 @@ Run the app.py
 python app.py
 ```  
 
-## Deploy to Heroku
+## Deploy to Heroku ##
 The deploy is done directly from the Heroku app connect to my repository  
 https://workatolist-lvs.herokuapp.com
+
+## Migration ##
+Uses alembic for database migration.  
+  
+Creating a new revision:  
+`alembic revision -m "my_new_revision" --autogenerate`
+  
+Running migrations to head:  
+`alembic upgrade head`  
+  
+Running migrations to previous revision:  
+`alembic downgrade -1`  
+
+## Testing ##
+Running the tests needs to install the `requirements-dev.txt`
+```
+pip install -r requirements-dev.txt
+```
+Command for running:
+```
+pytest -v
+```

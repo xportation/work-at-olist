@@ -8,5 +8,5 @@
 .env
 tmp
 
-#Env
 venv/
+.pytest_cache/
