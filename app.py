@@ -41,9 +41,7 @@ def errors_handler_plugin(func):
     return wrapper
 
 
-def wsgi_app(app_config):
-    engine = create_engine(app_config.DATABASE_URL)
-
+def wsgi_app(engine):
     app = bottle.default_app()
     app.install(errors_handler_plugin)
     app.install(SQLAlchemyPlugin(engine))
@@ -57,7 +55,8 @@ def main():
         port = 5000
 
     app_config = Config()
-    bottle.run(app=wsgi_app(app_config), host='0.0.0.0', port=port)
+    engine = create_engine(app_config.DATABASE_URL)
+    bottle.run(app=wsgi_app(engine), host='0.0.0.0', port=port)
 
 
 if __name__ == '__main__':

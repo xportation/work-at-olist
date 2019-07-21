@@ -3,19 +3,8 @@ import datetime
 import dateutil
 import marshmallow
 import pytest
-from marshmallow.utils import isoformat
 
 from schema import CallRecordSchema
-
-
-@pytest.fixture
-def base_call_payload():
-    payload = {
-        'call_id': 11,
-        'type': 'start',
-        'timestamp': isoformat(datetime.datetime.utcnow()),
-    }
-    return payload
 
 
 def test_should_throws_when_call_record_type_is_not_start_or_end(base_call_payload):

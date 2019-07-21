@@ -1,4 +1,4 @@
-import datetime
+# import datetime
 
 import pytest
 from sqlalchemy import create_engine
@@ -15,28 +15,6 @@ def db():
     create_session = sessionmaker()
     session = create_session(bind=engine)
     return session
-
-
-@pytest.fixture
-def start_call():
-    call_record = {
-        'call_id': 11,
-        'type': 'start',
-        'timestamp': datetime.datetime.utcnow(),
-        'source': '48912345678',
-        'destination': '4891234567'
-    }
-    return call_record
-
-
-@pytest.fixture
-def end_call():
-    call_record = {
-        'call_id': 13,
-        'type': 'end',
-        'timestamp': datetime.datetime.utcnow()
-    }
-    return call_record
 
 
 def assert_start_end_values(call_model, start_call, end_call):
