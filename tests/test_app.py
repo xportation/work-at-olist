@@ -1,35 +1,24 @@
-import datetime
 import json
-from unittest.mock import Mock
 
 import pytest
+import sqlalchemy
 from webtest import TestApp
+
 import app
+import model
 
 
 @pytest.fixture(scope='module')
-def app_config():
-    config = Mock(DATABASE_URL='sqlite://')
-    return config
+def my_engine():
+    engine = sqlalchemy.create_engine('sqlite://')
+    model.Base.metadata.create_all(bind=engine)
+    return engine
 
 
 @pytest.fixture(scope='module')
-def web_app(app_config):
-    my_app = TestApp(app.wsgi_app(app_config))
+def web_app(my_engine):
+    my_app = TestApp(app.wsgi_app(my_engine))
     return my_app
-
-
-@pytest.fixture
-def start_call_payload():
-    payload = {
-        'id': 22,
-        'call_id': 11,
-        'type': 'start',
-        'timestamp': str(datetime.datetime.utcnow()),
-        'source': '48912345678',
-        'destination': '4891234567',
-    }
-    return payload
 
 
 def test_should_return_422_when_call_json_is_invalid(web_app, start_call_payload):
