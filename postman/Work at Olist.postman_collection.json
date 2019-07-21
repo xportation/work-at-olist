@@ -1,0 +1,135 @@
+{
+	"info": {
+		"_postman_id": "bbb1ed6f-a386-40c7-842a-b4570c693385",
+		"name": "Work at Olist",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Start Call",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "4c84ba69-3c40-4b87-ac4e-a3dfc8cd9657",
+						"exec": [
+							"var possible_timestamps = [",
+							"    \"2018/12/31 23:13:00\", \"2018/11/30 23:55:22\", \"2018/12/02 08:25:58\", \"2018/11/15 12:51:02\", \"2018/11/22 20:20:42\",",
+							"    \"2018/12/24 23:45:32\", \"2018/12/25 12:00:00\", \"2019/01/01 00:00:28\", \"2019/01/01 01:22:14\", \"2019/01/01 09:42:12\", ",
+							"    \"2019/01/16 21:22:34\", \"2019/01/23 15:15:15\", \"2019/02/02 10:02:09\", \"2019/02/28 22:58:54\", \"2019/02/21 17:18:19\", ",
+							"    \"2018/11/03 19:20:21\", \"2018/12/09 09:11:13\", \"2019/01/05 03:06:12\", \"2019/02/14 02:02:00\", \"2018/12/02 09:31:33\"",
+							"];",
+							"",
+							"var possible_phones = [",
+							"    \"99918234580\", \"(91) 91847 5638\", \"98 9.4235.8574\", \"77 98877665\", \"99912345678\", ",
+							"    \"(98( 9901-1430\", \"(99) 99876-9900\", \"999431564\", \"99901456938\", \"99 9 9743 8822\"",
+							"];",
+							"",
+							"var source_phone_index = Math.floor(Math.random() * possible_phones.length);",
+							"var destination_phone_index = source_phone_index;",
+							"while (destination_phone_index == source_phone_index)",
+							"   destination_phone_index = Math.floor(Math.random() * possible_phones.length);",
+							"",
+							"var random_call_id = Math.floor(Math.random() * 100000) + 1;",
+							"var timestamp = possible_timestamps[Math.floor(Math.random() * possible_timestamps.length)];",
+							"var start_call_datetime = new Date(timestamp).toISOString();",
+							"var source_phone = possible_phones[source_phone_index];",
+							"var destination_phone = possible_phones[destination_phone_index];",
+							"",
+							"pm.environment.set(\"call_id\", random_call_id);",
+							"pm.environment.set(\"start_call_timestamp\", start_call_datetime);",
+							"pm.environment.set(\"source_phone\", source_phone);",
+							"pm.environment.set(\"destination_phone\", destination_phone);",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"call_id\": {{call_id}},\n    \"type\": \"start\",\n    \"timestamp\": \"{{start_call_timestamp}}\",\n    \"source\": \"{{source_phone}}\",\n    \"destination\": \"{{destination_phone}}\"\n}\n"
+				},
+				"url": {
+					"raw": "{{url}}/api/v1/register/call",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"register",
+						"call"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "End Call",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "f40d104d-ee9a-4df9-a146-33eb8e504d36",
+						"exec": [
+							"var possbile_call_seconds = [",
+							"    10, 15, 18, 10, 32, 35, 30, 35, 40, 120, 180, 240, 136, 3689, 2456, 234, 543, 765, 3456, 4123, 4128, 33, 48, 98, 989,",
+							"    234, 55, 89, 83, 3213, 4329",
+							"];",
+							"",
+							"var call_seconds_index = Math.floor(Math.random() * possbile_call_seconds.length);",
+							"",
+							"var start_call_timestamp = pm.environment.get(\"start_call_timestamp\"); ",
+							"var end_call_datetime = new Date(Date.parse(start_call_timestamp));",
+							"var call_seconds = possbile_call_seconds[call_seconds_index]",
+							"end_call_datetime.setSeconds(end_call_datetime.getSeconds() + call_seconds);",
+							"pm.environment.set(\"end_call_timestamp\", end_call_datetime.toISOString());",
+							"pm.environment.set(\"call_duration_seconds\", call_seconds);",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"call_id\": {{call_id}},\n    \"type\": \"end\",\n    \"timestamp\": \"{{end_call_timestamp}}\"\n}"
+				},
+				"url": {
+					"raw": "{{url}}/api/v1/register/call",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"register",
+						"call"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

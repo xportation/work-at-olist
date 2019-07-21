@@ -22,7 +22,6 @@ def web_app(app_config):
 @pytest.fixture
 def start_call_payload():
     payload = {
-        'id': 22,
         'call_id': 11,
         'type': 'start',
         'timestamp': str(datetime.datetime.utcnow()),

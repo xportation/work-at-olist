@@ -7,6 +7,7 @@ from sqlalchemy import create_engine
 
 from config import Config
 from schema import CallRecordSchema
+from service import CallService
 
 
 def _r(data, status_code):
@@ -22,8 +23,11 @@ def index():
 @bottle.post('/api/v1/register/call')
 def register_call(db):
     call_schema = CallRecordSchema()
-    _, _ = call_schema.load(bottle.request.json)
-    return _r(bottle.request.json, 201)
+    call_record, _ = call_schema.load(bottle.request.json)
+    call_service = CallService(db)
+    call_service.register_call(call_record)
+    _return_call, _ = call_schema.dump(call_record)
+    return _r(_return_call, 201)
 
 
 def errors_handler_plugin(func):
