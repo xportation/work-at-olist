@@ -20,9 +20,10 @@
 							"    \"2018/11/03 19:20:21\", \"2018/12/09 09:11:13\", \"2019/01/05 03:06:12\", \"2019/02/14 02:02:00\", \"2018/12/02 09:31:33\"",
 							"];",
 							"",
+							"var wrong_phone = \"77 8877665\";",
 							"var possible_phones = [",
-							"    \"99918234580\", \"(91) 91847 5638\", \"98 9.4235.8574\", \"77 98877665\", \"99912345678\", ",
-							"    \"(98( 9901-1430\", \"(99) 99876-9900\", \"999431564\", \"99901456938\", \"99 9 9743 8822\"",
+							"    \"99918234580\", \"(91) 91847 5638\", \"98 9.4235.8574\", wrong_phone, \"99912345678\", ",
+							"    \"(98( 9901-1430\", \"(99) 99876-9900\", \"9999431564\", \"99901456938\", \"99 9 9743 8822\"",
 							"];",
 							"",
 							"var source_phone_index = Math.floor(Math.random() * possible_phones.length);",
@@ -36,11 +37,32 @@
 							"var source_phone = possible_phones[source_phone_index];",
 							"var destination_phone = possible_phones[destination_phone_index];",
 							"",
+							"pm.environment.set(\"wrong_phone\", wrong_phone);",
 							"pm.environment.set(\"call_id\", random_call_id);",
 							"pm.environment.set(\"start_call_timestamp\", start_call_datetime);",
 							"pm.environment.set(\"source_phone\", source_phone);",
 							"pm.environment.set(\"destination_phone\", destination_phone);",
 							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "5a89fd1e-899d-4a6b-998c-b34bd941f2ff",
+						"exec": [
+							"var source_phone = pm.environment.get(\"source_phone\");",
+							"var destination_phone = pm.environment.get(\"destination_phone\");",
+							"var wrong_phone = pm.environment.get(\"wrong_phone\"); ",
+							"",
+							"var expected_status = 201;",
+							"if (source_phone == wrong_phone || destination_phone == wrong_phone)",
+							"    expected_status = 422;",
+							"    ",
+							"pm.test(`Status code is ${expected_status}`, function () {",
+							"    pm.response.to.have.status(expected_status);",
+							"});"
 						],
 						"type": "text/javascript"
 					}
@@ -97,6 +119,18 @@
 							"pm.environment.set(\"end_call_timestamp\", end_call_datetime.toISOString());",
 							"pm.environment.set(\"call_duration_seconds\", call_seconds);",
 							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "1f8d8981-cd66-45b2-8c7c-94c7681a8742",
+						"exec": [
+							"pm.test(\"Successful POST request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([201]);",
+							"});"
 						],
 						"type": "text/javascript"
 					}

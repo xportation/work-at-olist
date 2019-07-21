@@ -1,3 +1,4 @@
+import json
 import os
 
 import bottle
@@ -30,6 +31,16 @@ def register_call(db):
     return _r(_return_call, 201)
 
 
+def error_callback(error_context):
+    return json.dumps(dict(message=error_context.body))
+
+
+error_handler_callback = {
+    422: error_callback,
+    500: error_callback
+}
+
+
 def errors_handler_plugin(func):
     def wrapper(*args, **kwargs):
         try:
@@ -43,6 +54,7 @@ def errors_handler_plugin(func):
 
 def wsgi_app(engine):
     app = bottle.default_app()
+    app.error_handler = error_handler_callback
     app.install(errors_handler_plugin)
     app.install(SQLAlchemyPlugin(engine))
     return app
