@@ -1,5 +1,4 @@
 import json
-from unittest import mock
 
 import pytest
 import sqlalchemy
@@ -29,18 +28,6 @@ def test_should_return_422_when_call_json_is_invalid(web_app, start_call_payload
     assert resp.status_code == 422
 
 
-def test_register_call_fail_if_there_no_fare_registered(web_app, start_call_payload):
-    resp = web_app.post('/api/v1/calls', json.dumps(start_call_payload),
-                        content_type='application/json', status=422)
-    assert resp.status_code == 422
-
-
-def test_register_fare(web_app, fare_payload):
-    resp = web_app.post('/api/v1/fares', json.dumps(fare_payload), content_type='application/json')
-    assert resp.status_code == 201
-
-
-def test_register_start_call(web_app, start_call_payload, fare_payload):
-    _ = web_app.post('/api/v1/fares', json.dumps(fare_payload), content_type='application/json')
+def test_register_start_call(web_app, start_call_payload):
     resp = web_app.post('/api/v1/calls', json.dumps(start_call_payload), content_type='application/json')
     assert resp.status_code == 201
