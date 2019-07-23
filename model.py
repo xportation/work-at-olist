@@ -1,7 +1,6 @@
-import uuid
-
-from sqlalchemy import Column, Integer, String, DateTime, Float, Time
+from sqlalchemy import Column, Integer, String, DateTime, Float, Time, func, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import relationship
 
 Base = declarative_base()
 
@@ -12,10 +11,11 @@ class Fare(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     standing_charge = Column(Float(precision=2), nullable=False)
     call_minute_charge = Column(Float(precision=2), nullable=False)
-    start_reduce_time = Column(Time, nullable=True)
-    end_reduce_time = Column(Time, nullable=True)
+    start_reduce_time = Column(Time, nullable=False)
+    end_reduce_time = Column(Time, nullable=False)
     reduced_standing_charge = Column(Float(precision=2), nullable=False)
     reduced_call_minute_charge = Column(Float(precision=2), nullable=False)
+    starts_at = Column(DateTime, nullable=False, default=func.now())
 
 
 class Call(Base):
@@ -27,6 +27,8 @@ class Call(Base):
     origin_phone = Column(String(11), nullable=True)
     destination_phone = Column(String(11), nullable=True)
     end_timestamp = Column(DateTime, nullable=True)
+    fare_id = Column(Integer, ForeignKey('fare.id'), nullable=False)
+    fare = relationship('Fare')
 
     def load_from_record(self, call_record):
         self.call_id = call_record['call_id']

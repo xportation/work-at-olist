@@ -3,6 +3,9 @@ import re
 import marshmallow
 from marshmallow import Schema
 from marshmallow.validate import OneOf, Length
+from marshmallow_sqlalchemy import ModelSchema
+
+import model
 
 
 class CallRecordSchema(Schema):
@@ -33,3 +36,11 @@ class CallRecordSchema(Schema):
     @staticmethod
     def remove_non_numeric(phone):
         return re.sub('[^0-9]', '', phone)
+
+
+class FareSchema(ModelSchema):
+    class Meta:
+        strict = True
+        model = model.Fare
+        transient = True
+        exclude = ('id',)

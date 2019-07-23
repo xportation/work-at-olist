@@ -4,7 +4,8 @@ import dateutil
 import marshmallow
 import pytest
 
-from schema import CallRecordSchema
+import model
+from schema import CallRecordSchema, FareSchema
 
 
 def test_should_throws_when_call_record_type_is_not_start_or_end(base_call_payload):
@@ -72,3 +73,9 @@ def test_should_accept_timestamp_in_iso_format(base_call_payload):
     call_schema = CallRecordSchema()
     call_record, _ = call_schema.load(base_call_payload)
     assert call_record['timestamp'] == datetime.datetime(2019, 1, 16, 23, 22, 34, 0, tzinfo=dateutil.tz.tzutc())
+
+
+def test_fare_schema_loads_directly_to_model_type(fare_payload):
+    fare_schema = FareSchema()
+    fare_model, _ = fare_schema.load(fare_payload)
+    assert type(fare_model) is model.Fare

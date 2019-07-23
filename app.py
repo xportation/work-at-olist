@@ -7,8 +7,8 @@ from marshmallow import ValidationError
 from sqlalchemy import create_engine
 
 from config import Config
-from schema import CallRecordSchema
-from service import CallService
+from schema import CallRecordSchema, FareSchema
+from service import ModelService, FareNotFoundException
 
 
 def _r(data, status_code):
@@ -21,14 +21,23 @@ def index():
     return '<h1 style="text-align: center;">Work at Olist</h1><h2 style="text-align: center;">Leonardo Vitor da Silva</h2><p style="text-align: center;"><a href="mailto:xportation@gmail.com">xportation@gmail.com</a></p>'
 
 
-@bottle.post('/api/v1/register/call')
+@bottle.post('/api/v1/calls')
 def register_call(db):
     call_schema = CallRecordSchema()
     call_record, _ = call_schema.load(bottle.request.json)
-    call_service = CallService(db)
-    call_service.register_call(call_record)
+    model_service = ModelService(db)
+    model_service.register_call(call_record)
     _return_call, _ = call_schema.dump(call_record)
     return _r(_return_call, 201)
+
+
+@bottle.post('/api/v1/fares')
+def register_call(db):
+    fare_schema = FareSchema()
+    fare_model, _ = fare_schema.load(bottle.request.json)
+    db.add(fare_model)
+    _return_fare, _ = fare_schema.dump(fare_model)
+    return _r(_return_fare, 201)
 
 
 def error_callback(error_context):
@@ -49,6 +58,8 @@ def errors_handler_plugin(func):
             bottle.abort(422, str(e))
         except ValidationError as e:
             bottle.abort(422, e.messages)
+        except FareNotFoundException as e:
+            bottle.abort(422, str(e))
     return wrapper
 
 
