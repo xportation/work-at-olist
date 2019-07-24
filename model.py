@@ -35,7 +35,13 @@ class Fare(Base):
         :param timestamp:
         :return: tuple of standing and minute charge
         """
-        if self.start_reduce_time <= timestamp < self.end_reduce_time:
+        def time_in_reduce_period(start, end):
+            if start <= end:
+                return start <= timestamp < end
+            else:
+                return start <= timestamp or timestamp < end
+
+        if time_in_reduce_period(self.start_reduce_time, self.end_reduce_time):
             return self.reduced_standing_charge, self.reduced_call_minute_charge
         return self.standing_charge, self.call_minute_charge
 
