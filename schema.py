@@ -8,6 +8,10 @@ from marshmallow_sqlalchemy import ModelSchema
 import model
 
 
+def remove_non_numeric(phone):
+    return re.sub('[^0-9]', '', phone)
+
+
 class CallRecordSchema(Schema):
     id = marshmallow.fields.Integer(dump_only=True)
     call_id = marshmallow.fields.Integer()
@@ -28,14 +32,10 @@ class CallRecordSchema(Schema):
     @marshmallow.pre_load
     def validate_phone_number(self, data):
         if data.get('source'):
-            data['source'] = self.remove_non_numeric(data['source'])
+            data['source'] = remove_non_numeric(data['source'])
         if data.get('destination'):
-            data['destination'] = self.remove_non_numeric(data['destination'])
+            data['destination'] = remove_non_numeric(data['destination'])
         return data
-
-    @staticmethod
-    def remove_non_numeric(phone):
-        return re.sub('[^0-9]', '', phone)
 
 
 class FareSchema(ModelSchema):
@@ -44,3 +44,23 @@ class FareSchema(ModelSchema):
         model = model.Fare
         transient = True
         exclude = ('id',)
+
+
+class CallBillSchema(Schema):
+    destination = marshmallow.fields.String()
+    start_date = marshmallow.fields.Date()
+    start_time = marshmallow.fields.Time()
+    duration = marshmallow.fields.String()
+    price = marshmallow.fields.String()
+
+    class Meta:
+        strict = True
+
+
+class PhoneBillSchema(Schema):
+    total_duration = marshmallow.fields.String()
+    total_price = marshmallow.fields.String()
+    calls = marshmallow.fields.Nested(CallBillSchema, many=True)
+
+    class Meta:
+        strict = True
