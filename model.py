@@ -9,8 +9,9 @@ Base = declarative_base()
 
 
 def format_duration(duration):
-    t = datetime.datetime.utcfromtimestamp(duration.total_seconds())
-    return t.strftime("%Hh%Mm%Ss")
+    hours, remainder = divmod(duration.total_seconds(), 3600)
+    minutes, seconds = divmod(remainder, 60)
+    return f'{int(hours):02}h{int(minutes):02}m{int(seconds):02}s'
 
 
 def format_price(price):

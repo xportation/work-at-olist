@@ -44,3 +44,9 @@ def test_phone_bill_report(call_model, fare_model):
     assert report['start_time'] == datetime.time(20, 5, 44)
     assert report['duration'] == '00h02m18s'
     assert report['price'] == 'R$ 1.30'
+
+
+def test_format_duration_when_have_days():
+    duration = datetime.timedelta(days=5.0, hours=23.0, minutes=12.0, seconds=4.0)
+    duration_str = model.format_duration(duration)
+    assert duration_str == '143h12m04s'
