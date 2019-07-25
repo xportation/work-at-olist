@@ -1,10 +1,8 @@
-import copy
 import datetime
 
 import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy.orm.session import make_transient
 
 import model
 import service

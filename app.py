@@ -80,6 +80,7 @@ def errors_handler_plugin(func):
             bottle.abort(422, str(e))
         except InvalidBillingPeriod as e:
             bottle.abort(404, str(e))
+
     return wrapper
 
 

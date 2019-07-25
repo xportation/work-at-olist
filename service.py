@@ -40,8 +40,8 @@ class ModelService:
         Load the current fare
         :return: Fare
         """
-        fare_model = self.db.query(model.Fare).\
-            filter(model.Fare.starts_at <= datetime.datetime.utcnow()).\
+        fare_model = self.db.query(model.Fare). \
+            filter(model.Fare.starts_at <= datetime.datetime.utcnow()). \
             order_by(model.Fare.starts_at.desc()).limit(1).first()
         if not fare_model:
             raise FareNotFoundException('Fare not found.')
