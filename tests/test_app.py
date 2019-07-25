@@ -1,3 +1,4 @@
+import datetime
 import json
 from unittest import mock
 
@@ -44,3 +45,17 @@ def test_register_start_call(web_app, start_call_payload, fare_payload):
     _ = web_app.post('/api/v1/fares', json.dumps(fare_payload), content_type='application/json')
     resp = web_app.post('/api/v1/calls', json.dumps(start_call_payload), content_type='application/json')
     assert resp.status_code == 201
+
+
+def test_phone_bill_report(web_app, start_call_payload, end_call_payload, fare_payload):
+    _ = web_app.post('/api/v1/fares', json.dumps(fare_payload), content_type='application/json')
+    _ = web_app.post('/api/v1/calls', json.dumps(start_call_payload), content_type='application/json')
+    _ = web_app.post('/api/v1/calls', json.dumps(end_call_payload), content_type='application/json')
+    resp = web_app.get('/api/v1/bills/48912345678')
+    assert resp.status_code == 200
+
+
+def test_phone_bill_report_fail_if_period_is_invalid(web_app, start_call_payload):
+    today = datetime.date.today()
+    resp = web_app.get('/api/v1/bills/48912345678', params=dict(month=today.month, year=today.year), status=404)
+    assert resp.status_code == 404

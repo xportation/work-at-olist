@@ -6,9 +6,10 @@ from bottle_sqlalchemy import SQLAlchemyPlugin
 from marshmallow import ValidationError
 from sqlalchemy import create_engine
 
+import schema
 from config import Config
-from schema import CallRecordSchema, FareSchema
-from service import ModelService, FareNotFoundException
+from schema import CallRecordSchema, FareSchema, PhoneBillSchema
+from service import ModelService, FareNotFoundException, InvalidBillingPeriod
 
 
 def _r(data, status_code):
@@ -18,7 +19,8 @@ def _r(data, status_code):
 
 @bottle.get('/')
 def index():
-    return '<h1 style="text-align: center;">Work at Olist</h1><h2 style="text-align: center;">Leonardo Vitor da Silva</h2><p style="text-align: center;"><a href="mailto:xportation@gmail.com">xportation@gmail.com</a></p>'
+    return '<h1 style="text-align: center;">Work at Olist</h1><h2 style="text-align: center;">Leonardo Vitor da Silva' \
+           '</h2><p style="text-align: center;"><a href="mailto:xportation@gmail.com">xportation@gmail.com</a></p>'
 
 
 @bottle.post('/api/v1/calls')
@@ -32,7 +34,7 @@ def register_call(db):
 
 
 @bottle.post('/api/v1/fares')
-def register_call(db):
+def register_fare(db):
     fare_schema = FareSchema()
     fare_model, _ = fare_schema.load(bottle.request.json)
     db.add(fare_model)
@@ -40,11 +42,27 @@ def register_call(db):
     return _r(_return_fare, 201)
 
 
+@bottle.get('/api/v1/bills/<phone>')
+def load_bills(db, phone):
+    phone = schema.remove_non_numeric(phone)
+    args = bottle.request.query
+    month = int(args.month) if args.month else None
+    year = int(args.year) if args.year else None
+
+    model_service = ModelService(db)
+    billing = model_service.billing_report(phone, month, year)
+
+    phone_bill_schema = PhoneBillSchema()
+    _return_billing, _ = phone_bill_schema.dump(billing)
+    return _r(_return_billing, 200)
+
+
 def error_callback(error_context):
     return json.dumps(dict(message=error_context.body))
 
 
 error_handler_callback = {
+    404: error_callback,
     422: error_callback,
     500: error_callback
 }
@@ -60,6 +78,9 @@ def errors_handler_plugin(func):
             bottle.abort(422, e.messages)
         except FareNotFoundException as e:
             bottle.abort(422, str(e))
+        except InvalidBillingPeriod as e:
+            bottle.abort(404, str(e))
+
     return wrapper
 
 
