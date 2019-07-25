@@ -1,2 +1,2 @@
-migrate: alembic upgrade head
 web: python app.py
+release: alembic upgrade head
