@@ -169,6 +169,1144 @@
 			]
 		},
 		{
+			"name": "start_db",
+			"item": [
+				{
+					"name": "Register Fare",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "4c84ba69-3c40-4b87-ac4e-a3dfc8cd9657",
+								"exec": [
+									"var fare_start_reduce_time = \"22:00:00\";",
+									"var fare_end_reduce_time = \"06:00:00\";",
+									"var fare_starts_at = new Date(Date.now()).toISOString();",
+									"",
+									"pm.environment.set(\"fare_start_reduce_time\", fare_start_reduce_time);",
+									"pm.environment.set(\"fare_end_reduce_time\", fare_end_reduce_time);",
+									"pm.environment.set(\"fare_starts_at\", fare_starts_at);",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "5a89fd1e-899d-4a6b-998c-b34bd941f2ff",
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"standing_charge\": 0.36,\n    \"call_minute_charge\": 0.09,\n    \"start_reduce_time\": \"{{fare_start_reduce_time}}\",\n    \"end_reduce_time\": \"{{fare_end_reduce_time}}\",\n    \"reduced_standing_charge\": 0.36,\n    \"reduced_call_minute_charge\": 0.0,\n    \"starts_at\": \"{{fare_starts_at}}\"\n}\n"
+						},
+						"url": {
+							"raw": "{{url}}/api/v1/fares",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"fares"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Start Call 70",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "4c84ba69-3c40-4b87-ac4e-a3dfc8cd9657",
+								"exec": [
+									"/*",
+									"call_id: 70, started at 2016-02-29T12:00:00Z and ended at 2016-02-29T14:00:00Z.",
+									"call_id: 71, started at 2017-12-11T15:07:13Z and ended at 2017-12-11T15:14:56Z.",
+									"call_id: 72, started at 2017-12-12T22:47:56Z and ended at 2017-12-12T22:50:56Z.",
+									"call_id: 73, started at 2017-12-12T21:57:13Z and ended at 2017-12-12T22:10:56Z.",
+									"call_id: 74, started at 2017-12-12T04:57:13Z and ended at 2017-12-12T06:10:56Z.",
+									"call_id: 75, started at 2017-12-13T21:57:13Z and ended at 2017-12-14T22:10:56Z.",
+									"call_id: 76, started at 2017-12-12T15:07:58Z and ended at 2017-12-12T15:12:56Z.",
+									"call_id: 77, started at 2018-02-28T21:57:13Z and ended at 2018-03-01T22:10:56Z.",
+									"*/"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "5a89fd1e-899d-4a6b-998c-b34bd941f2ff",
+								"exec": [
+									"var source_phone = pm.environment.get(\"source_phone\");",
+									"var destination_phone = pm.environment.get(\"destination_phone\");",
+									"var wrong_phone = pm.environment.get(\"wrong_phone\"); ",
+									"",
+									"var expected_status = 201;",
+									"if (source_phone == wrong_phone || destination_phone == wrong_phone)",
+									"    expected_status = 422;",
+									"    ",
+									"pm.test(`Status code is ${expected_status}`, function () {",
+									"    pm.response.to.have.status(expected_status);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"call_id\": 70,\n    \"type\": \"start\",\n    \"timestamp\": \"2016-02-29T12:00:00Z\",\n    \"source\": \"99 98852 6423\",\n    \"destination\": \"99 3346 8278\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/api/v1/calls",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"calls"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Start Call 71",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "4c84ba69-3c40-4b87-ac4e-a3dfc8cd9657",
+								"exec": [
+									"/*",
+									"call_id: 70, started at 2016-02-29T12:00:00Z and ended at 2016-02-29T14:00:00Z.",
+									"call_id: 71, started at 2017-12-11T15:07:13Z and ended at 2017-12-11T15:14:56Z.",
+									"call_id: 72, started at 2017-12-12T22:47:56Z and ended at 2017-12-12T22:50:56Z.",
+									"call_id: 73, started at 2017-12-12T21:57:13Z and ended at 2017-12-12T22:10:56Z.",
+									"call_id: 74, started at 2017-12-12T04:57:13Z and ended at 2017-12-12T06:10:56Z.",
+									"call_id: 75, started at 2017-12-13T21:57:13Z and ended at 2017-12-14T22:10:56Z.",
+									"call_id: 76, started at 2017-12-12T15:07:58Z and ended at 2017-12-12T15:12:56Z.",
+									"call_id: 77, started at 2018-02-28T21:57:13Z and ended at 2018-03-01T22:10:56Z.",
+									"*/"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "5a89fd1e-899d-4a6b-998c-b34bd941f2ff",
+								"exec": [
+									"var source_phone = pm.environment.get(\"source_phone\");",
+									"var destination_phone = pm.environment.get(\"destination_phone\");",
+									"var wrong_phone = pm.environment.get(\"wrong_phone\"); ",
+									"",
+									"var expected_status = 201;",
+									"if (source_phone == wrong_phone || destination_phone == wrong_phone)",
+									"    expected_status = 422;",
+									"    ",
+									"pm.test(`Status code is ${expected_status}`, function () {",
+									"    pm.response.to.have.status(expected_status);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"call_id\": 71,\n    \"type\": \"start\",\n    \"timestamp\": \"2017-12-11T15:07:13Z\",\n    \"source\": \"99 98852 6423\",\n    \"destination\": \"99 3346 8278\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/api/v1/calls",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"calls"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Start Call 72",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "4c84ba69-3c40-4b87-ac4e-a3dfc8cd9657",
+								"exec": [
+									"/*",
+									"call_id: 70, started at 2016-02-29T12:00:00Z and ended at 2016-02-29T14:00:00Z.",
+									"call_id: 71, started at 2017-12-11T15:07:13Z and ended at 2017-12-11T15:14:56Z.",
+									"call_id: 72, started at 2017-12-12T22:47:56Z and ended at 2017-12-12T22:50:56Z.",
+									"call_id: 73, started at 2017-12-12T21:57:13Z and ended at 2017-12-12T22:10:56Z.",
+									"call_id: 74, started at 2017-12-12T04:57:13Z and ended at 2017-12-12T06:10:56Z.",
+									"call_id: 75, started at 2017-12-13T21:57:13Z and ended at 2017-12-14T22:10:56Z.",
+									"call_id: 76, started at 2017-12-12T15:07:58Z and ended at 2017-12-12T15:12:56Z.",
+									"call_id: 77, started at 2018-02-28T21:57:13Z and ended at 2018-03-01T22:10:56Z.",
+									"*/"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "5a89fd1e-899d-4a6b-998c-b34bd941f2ff",
+								"exec": [
+									"var source_phone = pm.environment.get(\"source_phone\");",
+									"var destination_phone = pm.environment.get(\"destination_phone\");",
+									"var wrong_phone = pm.environment.get(\"wrong_phone\"); ",
+									"",
+									"var expected_status = 201;",
+									"if (source_phone == wrong_phone || destination_phone == wrong_phone)",
+									"    expected_status = 422;",
+									"    ",
+									"pm.test(`Status code is ${expected_status}`, function () {",
+									"    pm.response.to.have.status(expected_status);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"call_id\": 72,\n    \"type\": \"start\",\n    \"timestamp\": \"2017-12-12T22:47:56Z\",\n    \"source\": \"99 98852 6423\",\n    \"destination\": \"99 3346 8278\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/api/v1/calls",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"calls"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Start Call 73",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "4c84ba69-3c40-4b87-ac4e-a3dfc8cd9657",
+								"exec": [
+									"/*",
+									"call_id: 70, started at 2016-02-29T12:00:00Z and ended at 2016-02-29T14:00:00Z.",
+									"call_id: 71, started at 2017-12-11T15:07:13Z and ended at 2017-12-11T15:14:56Z.",
+									"call_id: 72, started at 2017-12-12T22:47:56Z and ended at 2017-12-12T22:50:56Z.",
+									"call_id: 73, started at 2017-12-12T21:57:13Z and ended at 2017-12-12T22:10:56Z.",
+									"call_id: 74, started at 2017-12-12T04:57:13Z and ended at 2017-12-12T06:10:56Z.",
+									"call_id: 75, started at 2017-12-13T21:57:13Z and ended at 2017-12-14T22:10:56Z.",
+									"call_id: 76, started at 2017-12-12T15:07:58Z and ended at 2017-12-12T15:12:56Z.",
+									"call_id: 77, started at 2018-02-28T21:57:13Z and ended at 2018-03-01T22:10:56Z.",
+									"*/"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "5a89fd1e-899d-4a6b-998c-b34bd941f2ff",
+								"exec": [
+									"var source_phone = pm.environment.get(\"source_phone\");",
+									"var destination_phone = pm.environment.get(\"destination_phone\");",
+									"var wrong_phone = pm.environment.get(\"wrong_phone\"); ",
+									"",
+									"var expected_status = 201;",
+									"if (source_phone == wrong_phone || destination_phone == wrong_phone)",
+									"    expected_status = 422;",
+									"    ",
+									"pm.test(`Status code is ${expected_status}`, function () {",
+									"    pm.response.to.have.status(expected_status);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"call_id\": 73,\n    \"type\": \"start\",\n    \"timestamp\": \"2017-12-12T21:57:13Z\",\n    \"source\": \"99 98852 6423\",\n    \"destination\": \"99 3346 8278\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/api/v1/calls",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"calls"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Start Call 74",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "4c84ba69-3c40-4b87-ac4e-a3dfc8cd9657",
+								"exec": [
+									"/*",
+									"call_id: 70, started at 2016-02-29T12:00:00Z and ended at 2016-02-29T14:00:00Z.",
+									"call_id: 71, started at 2017-12-11T15:07:13Z and ended at 2017-12-11T15:14:56Z.",
+									"call_id: 72, started at 2017-12-12T22:47:56Z and ended at 2017-12-12T22:50:56Z.",
+									"call_id: 73, started at 2017-12-12T21:57:13Z and ended at 2017-12-12T22:10:56Z.",
+									"call_id: 74, started at 2017-12-12T04:57:13Z and ended at 2017-12-12T06:10:56Z.",
+									"call_id: 75, started at 2017-12-13T21:57:13Z and ended at 2017-12-14T22:10:56Z.",
+									"call_id: 76, started at 2017-12-12T15:07:58Z and ended at 2017-12-12T15:12:56Z.",
+									"call_id: 77, started at 2018-02-28T21:57:13Z and ended at 2018-03-01T22:10:56Z.",
+									"*/"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "5a89fd1e-899d-4a6b-998c-b34bd941f2ff",
+								"exec": [
+									"var source_phone = pm.environment.get(\"source_phone\");",
+									"var destination_phone = pm.environment.get(\"destination_phone\");",
+									"var wrong_phone = pm.environment.get(\"wrong_phone\"); ",
+									"",
+									"var expected_status = 201;",
+									"if (source_phone == wrong_phone || destination_phone == wrong_phone)",
+									"    expected_status = 422;",
+									"    ",
+									"pm.test(`Status code is ${expected_status}`, function () {",
+									"    pm.response.to.have.status(expected_status);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"call_id\": 74,\n    \"type\": \"start\",\n    \"timestamp\": \"2017-12-12T04:57:13Z\",\n    \"source\": \"99 98852 6423\",\n    \"destination\": \"99 3346 8278\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/api/v1/calls",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"calls"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Start Call 75",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "4c84ba69-3c40-4b87-ac4e-a3dfc8cd9657",
+								"exec": [
+									"/*",
+									"call_id: 70, started at 2016-02-29T12:00:00Z and ended at 2016-02-29T14:00:00Z.",
+									"call_id: 71, started at 2017-12-11T15:07:13Z and ended at 2017-12-11T15:14:56Z.",
+									"call_id: 72, started at 2017-12-12T22:47:56Z and ended at 2017-12-12T22:50:56Z.",
+									"call_id: 73, started at 2017-12-12T21:57:13Z and ended at 2017-12-12T22:10:56Z.",
+									"call_id: 74, started at 2017-12-12T04:57:13Z and ended at 2017-12-12T06:10:56Z.",
+									"call_id: 75, started at 2017-12-13T21:57:13Z and ended at 2017-12-14T22:10:56Z.",
+									"call_id: 76, started at 2017-12-12T15:07:58Z and ended at 2017-12-12T15:12:56Z.",
+									"call_id: 77, started at 2018-02-28T21:57:13Z and ended at 2018-03-01T22:10:56Z.",
+									"*/"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "5a89fd1e-899d-4a6b-998c-b34bd941f2ff",
+								"exec": [
+									"var source_phone = pm.environment.get(\"source_phone\");",
+									"var destination_phone = pm.environment.get(\"destination_phone\");",
+									"var wrong_phone = pm.environment.get(\"wrong_phone\"); ",
+									"",
+									"var expected_status = 201;",
+									"if (source_phone == wrong_phone || destination_phone == wrong_phone)",
+									"    expected_status = 422;",
+									"    ",
+									"pm.test(`Status code is ${expected_status}`, function () {",
+									"    pm.response.to.have.status(expected_status);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"call_id\": 75,\n    \"type\": \"start\",\n    \"timestamp\": \"2017-12-13T21:57:13Z\",\n    \"source\": \"99 98852 6423\",\n    \"destination\": \"99 3346 8278\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/api/v1/calls",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"calls"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Start Call 76",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "4c84ba69-3c40-4b87-ac4e-a3dfc8cd9657",
+								"exec": [
+									"/*",
+									"call_id: 70, started at 2016-02-29T12:00:00Z and ended at 2016-02-29T14:00:00Z.",
+									"call_id: 71, started at 2017-12-11T15:07:13Z and ended at 2017-12-11T15:14:56Z.",
+									"call_id: 72, started at 2017-12-12T22:47:56Z and ended at 2017-12-12T22:50:56Z.",
+									"call_id: 73, started at 2017-12-12T21:57:13Z and ended at 2017-12-12T22:10:56Z.",
+									"call_id: 74, started at 2017-12-12T04:57:13Z and ended at 2017-12-12T06:10:56Z.",
+									"call_id: 75, started at 2017-12-13T21:57:13Z and ended at 2017-12-14T22:10:56Z.",
+									"call_id: 76, started at 2017-12-12T15:07:58Z and ended at 2017-12-12T15:12:56Z.",
+									"call_id: 77, started at 2018-02-28T21:57:13Z and ended at 2018-03-01T22:10:56Z.",
+									"*/"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "5a89fd1e-899d-4a6b-998c-b34bd941f2ff",
+								"exec": [
+									"var source_phone = pm.environment.get(\"source_phone\");",
+									"var destination_phone = pm.environment.get(\"destination_phone\");",
+									"var wrong_phone = pm.environment.get(\"wrong_phone\"); ",
+									"",
+									"var expected_status = 201;",
+									"if (source_phone == wrong_phone || destination_phone == wrong_phone)",
+									"    expected_status = 422;",
+									"    ",
+									"pm.test(`Status code is ${expected_status}`, function () {",
+									"    pm.response.to.have.status(expected_status);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"call_id\": 76,\n    \"type\": \"start\",\n    \"timestamp\": \"2017-12-12T15:07:58Z\",\n    \"source\": \"99 98852 6423\",\n    \"destination\": \"99 3346 8278\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/api/v1/calls",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"calls"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Start Call 77",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "4c84ba69-3c40-4b87-ac4e-a3dfc8cd9657",
+								"exec": [
+									"/*",
+									"call_id: 70, started at 2016-02-29T12:00:00Z and ended at 2016-02-29T14:00:00Z.",
+									"call_id: 71, started at 2017-12-11T15:07:13Z and ended at 2017-12-11T15:14:56Z.",
+									"call_id: 72, started at 2017-12-12T22:47:56Z and ended at 2017-12-12T22:50:56Z.",
+									"call_id: 73, started at 2017-12-12T21:57:13Z and ended at 2017-12-12T22:10:56Z.",
+									"call_id: 74, started at 2017-12-12T04:57:13Z and ended at 2017-12-12T06:10:56Z.",
+									"call_id: 75, started at 2017-12-13T21:57:13Z and ended at 2017-12-14T22:10:56Z.",
+									"call_id: 76, started at 2017-12-12T15:07:58Z and ended at 2017-12-12T15:12:56Z.",
+									"call_id: 77, started at 2018-02-28T21:57:13Z and ended at 2018-03-01T22:10:56Z.",
+									"*/"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "5a89fd1e-899d-4a6b-998c-b34bd941f2ff",
+								"exec": [
+									"var source_phone = pm.environment.get(\"source_phone\");",
+									"var destination_phone = pm.environment.get(\"destination_phone\");",
+									"var wrong_phone = pm.environment.get(\"wrong_phone\"); ",
+									"",
+									"var expected_status = 201;",
+									"if (source_phone == wrong_phone || destination_phone == wrong_phone)",
+									"    expected_status = 422;",
+									"    ",
+									"pm.test(`Status code is ${expected_status}`, function () {",
+									"    pm.response.to.have.status(expected_status);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"call_id\": 77,\n    \"type\": \"start\",\n    \"timestamp\": \"2018-02-28T21:57:13Z\",\n    \"source\": \"99 98852 6423\",\n    \"destination\": \"99 3346 8278\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/api/v1/calls",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"calls"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "End Call 70",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "f40d104d-ee9a-4df9-a146-33eb8e504d36",
+								"exec": [
+									"/*",
+									"call_id: 70, started at 2016-02-29T12:00:00Z and ended at 2016-02-29T14:00:00Z.",
+									"call_id: 71, started at 2017-12-11T15:07:13Z and ended at 2017-12-11T15:14:56Z.",
+									"call_id: 72, started at 2017-12-12T22:47:56Z and ended at 2017-12-12T22:50:56Z.",
+									"call_id: 73, started at 2017-12-12T21:57:13Z and ended at 2017-12-12T22:10:56Z.",
+									"call_id: 74, started at 2017-12-12T04:57:13Z and ended at 2017-12-12T06:10:56Z.",
+									"call_id: 75, started at 2017-12-13T21:57:13Z and ended at 2017-12-14T22:10:56Z.",
+									"call_id: 76, started at 2017-12-12T15:07:58Z and ended at 2017-12-12T15:12:56Z.",
+									"call_id: 77, started at 2018-02-28T21:57:13Z and ended at 2018-03-01T22:10:56Z.",
+									"*/"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "1f8d8981-cd66-45b2-8c7c-94c7681a8742",
+								"exec": [
+									"pm.test(\"Successful POST request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([201]);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"call_id\": 70,\n    \"type\": \"end\",\n    \"timestamp\": \"2016-02-29T14:00:00Z\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/api/v1/calls",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"calls"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "End Call 71",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "f40d104d-ee9a-4df9-a146-33eb8e504d36",
+								"exec": [
+									"/*",
+									"call_id: 70, started at 2016-02-29T12:00:00Z and ended at 2016-02-29T14:00:00Z.",
+									"call_id: 71, started at 2017-12-11T15:07:13Z and ended at 2017-12-11T15:14:56Z.",
+									"call_id: 72, started at 2017-12-12T22:47:56Z and ended at 2017-12-12T22:50:56Z.",
+									"call_id: 73, started at 2017-12-12T21:57:13Z and ended at 2017-12-12T22:10:56Z.",
+									"call_id: 74, started at 2017-12-12T04:57:13Z and ended at 2017-12-12T06:10:56Z.",
+									"call_id: 75, started at 2017-12-13T21:57:13Z and ended at 2017-12-14T22:10:56Z.",
+									"call_id: 76, started at 2017-12-12T15:07:58Z and ended at 2017-12-12T15:12:56Z.",
+									"call_id: 77, started at 2018-02-28T21:57:13Z and ended at 2018-03-01T22:10:56Z.",
+									"*/"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "1f8d8981-cd66-45b2-8c7c-94c7681a8742",
+								"exec": [
+									"pm.test(\"Successful POST request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([201]);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"call_id\": 71,\n    \"type\": \"end\",\n    \"timestamp\": \"2017-12-11T15:14:56Z\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/api/v1/calls",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"calls"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "End Call 72",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "f40d104d-ee9a-4df9-a146-33eb8e504d36",
+								"exec": [
+									"/*",
+									"call_id: 70, started at 2016-02-29T12:00:00Z and ended at 2016-02-29T14:00:00Z.",
+									"call_id: 71, started at 2017-12-11T15:07:13Z and ended at 2017-12-11T15:14:56Z.",
+									"call_id: 72, started at 2017-12-12T22:47:56Z and ended at 2017-12-12T22:50:56Z.",
+									"call_id: 73, started at 2017-12-12T21:57:13Z and ended at 2017-12-12T22:10:56Z.",
+									"call_id: 74, started at 2017-12-12T04:57:13Z and ended at 2017-12-12T06:10:56Z.",
+									"call_id: 75, started at 2017-12-13T21:57:13Z and ended at 2017-12-14T22:10:56Z.",
+									"call_id: 76, started at 2017-12-12T15:07:58Z and ended at 2017-12-12T15:12:56Z.",
+									"call_id: 77, started at 2018-02-28T21:57:13Z and ended at 2018-03-01T22:10:56Z.",
+									"*/"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "1f8d8981-cd66-45b2-8c7c-94c7681a8742",
+								"exec": [
+									"pm.test(\"Successful POST request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([201]);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"call_id\": 72,\n    \"type\": \"end\",\n    \"timestamp\": \"2017-12-12T22:50:56Z\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/api/v1/calls",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"calls"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "End Call 73",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "f40d104d-ee9a-4df9-a146-33eb8e504d36",
+								"exec": [
+									"/*",
+									"call_id: 70, started at 2016-02-29T12:00:00Z and ended at 2016-02-29T14:00:00Z.",
+									"call_id: 71, started at 2017-12-11T15:07:13Z and ended at 2017-12-11T15:14:56Z.",
+									"call_id: 72, started at 2017-12-12T22:47:56Z and ended at 2017-12-12T22:50:56Z.",
+									"call_id: 73, started at 2017-12-12T21:57:13Z and ended at 2017-12-12T22:10:56Z.",
+									"call_id: 74, started at 2017-12-12T04:57:13Z and ended at 2017-12-12T06:10:56Z.",
+									"call_id: 75, started at 2017-12-13T21:57:13Z and ended at 2017-12-14T22:10:56Z.",
+									"call_id: 76, started at 2017-12-12T15:07:58Z and ended at 2017-12-12T15:12:56Z.",
+									"call_id: 77, started at 2018-02-28T21:57:13Z and ended at 2018-03-01T22:10:56Z.",
+									"*/"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "1f8d8981-cd66-45b2-8c7c-94c7681a8742",
+								"exec": [
+									"pm.test(\"Successful POST request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([201]);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"call_id\": 73,\n    \"type\": \"end\",\n    \"timestamp\": \"2017-12-12T22:10:56Z\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/api/v1/calls",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"calls"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "End Call 74",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "f40d104d-ee9a-4df9-a146-33eb8e504d36",
+								"exec": [
+									"/*",
+									"call_id: 70, started at 2016-02-29T12:00:00Z and ended at 2016-02-29T14:00:00Z.",
+									"call_id: 71, started at 2017-12-11T15:07:13Z and ended at 2017-12-11T15:14:56Z.",
+									"call_id: 72, started at 2017-12-12T22:47:56Z and ended at 2017-12-12T22:50:56Z.",
+									"call_id: 73, started at 2017-12-12T21:57:13Z and ended at 2017-12-12T22:10:56Z.",
+									"call_id: 74, started at 2017-12-12T04:57:13Z and ended at 2017-12-12T06:10:56Z.",
+									"call_id: 75, started at 2017-12-13T21:57:13Z and ended at 2017-12-14T22:10:56Z.",
+									"call_id: 76, started at 2017-12-12T15:07:58Z and ended at 2017-12-12T15:12:56Z.",
+									"call_id: 77, started at 2018-02-28T21:57:13Z and ended at 2018-03-01T22:10:56Z.",
+									"*/"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "1f8d8981-cd66-45b2-8c7c-94c7681a8742",
+								"exec": [
+									"pm.test(\"Successful POST request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([201]);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"call_id\": 74,\n    \"type\": \"end\",\n    \"timestamp\": \"2017-12-12T06:10:56Z\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/api/v1/calls",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"calls"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "End Call 75",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "f40d104d-ee9a-4df9-a146-33eb8e504d36",
+								"exec": [
+									"/*",
+									"call_id: 70, started at 2016-02-29T12:00:00Z and ended at 2016-02-29T14:00:00Z.",
+									"call_id: 71, started at 2017-12-11T15:07:13Z and ended at 2017-12-11T15:14:56Z.",
+									"call_id: 72, started at 2017-12-12T22:47:56Z and ended at 2017-12-12T22:50:56Z.",
+									"call_id: 73, started at 2017-12-12T21:57:13Z and ended at 2017-12-12T22:10:56Z.",
+									"call_id: 74, started at 2017-12-12T04:57:13Z and ended at 2017-12-12T06:10:56Z.",
+									"call_id: 75, started at 2017-12-13T21:57:13Z and ended at 2017-12-14T22:10:56Z.",
+									"call_id: 76, started at 2017-12-12T15:07:58Z and ended at 2017-12-12T15:12:56Z.",
+									"call_id: 77, started at 2018-02-28T21:57:13Z and ended at 2018-03-01T22:10:56Z.",
+									"*/"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "1f8d8981-cd66-45b2-8c7c-94c7681a8742",
+								"exec": [
+									"pm.test(\"Successful POST request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([201]);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"call_id\": 75,\n    \"type\": \"end\",\n    \"timestamp\": \"2017-12-14T22:10:56Z\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/api/v1/calls",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"calls"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "End Call 76",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "f40d104d-ee9a-4df9-a146-33eb8e504d36",
+								"exec": [
+									"/*",
+									"call_id: 70, started at 2016-02-29T12:00:00Z and ended at 2016-02-29T14:00:00Z.",
+									"call_id: 71, started at 2017-12-11T15:07:13Z and ended at 2017-12-11T15:14:56Z.",
+									"call_id: 72, started at 2017-12-12T22:47:56Z and ended at 2017-12-12T22:50:56Z.",
+									"call_id: 73, started at 2017-12-12T21:57:13Z and ended at 2017-12-12T22:10:56Z.",
+									"call_id: 74, started at 2017-12-12T04:57:13Z and ended at 2017-12-12T06:10:56Z.",
+									"call_id: 75, started at 2017-12-13T21:57:13Z and ended at 2017-12-14T22:10:56Z.",
+									"call_id: 76, started at 2017-12-12T15:07:58Z and ended at 2017-12-12T15:12:56Z.",
+									"call_id: 77, started at 2018-02-28T21:57:13Z and ended at 2018-03-01T22:10:56Z.",
+									"*/"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "1f8d8981-cd66-45b2-8c7c-94c7681a8742",
+								"exec": [
+									"pm.test(\"Successful POST request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([201]);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"call_id\": 76,\n    \"type\": \"end\",\n    \"timestamp\": \"2017-12-12T15:12:56Z\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/api/v1/calls",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"calls"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "End Call 77",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "f40d104d-ee9a-4df9-a146-33eb8e504d36",
+								"exec": [
+									"/*",
+									"call_id: 70, started at 2016-02-29T12:00:00Z and ended at 2016-02-29T14:00:00Z.",
+									"call_id: 71, started at 2017-12-11T15:07:13Z and ended at 2017-12-11T15:14:56Z.",
+									"call_id: 72, started at 2017-12-12T22:47:56Z and ended at 2017-12-12T22:50:56Z.",
+									"call_id: 73, started at 2017-12-12T21:57:13Z and ended at 2017-12-12T22:10:56Z.",
+									"call_id: 74, started at 2017-12-12T04:57:13Z and ended at 2017-12-12T06:10:56Z.",
+									"call_id: 75, started at 2017-12-13T21:57:13Z and ended at 2017-12-14T22:10:56Z.",
+									"call_id: 76, started at 2017-12-12T15:07:58Z and ended at 2017-12-12T15:12:56Z.",
+									"call_id: 77, started at 2018-02-28T21:57:13Z and ended at 2018-03-01T22:10:56Z.",
+									"*/"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "1f8d8981-cd66-45b2-8c7c-94c7681a8742",
+								"exec": [
+									"pm.test(\"Successful POST request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([201]);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"call_id\": 77,\n    \"type\": \"end\",\n    \"timestamp\": \"2018-03-01T22:10:56Z\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/api/v1/calls",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"calls"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "Register Fare",
 			"event": [
 				{
@@ -213,7 +1351,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"standing_charge\": 0.36,\n    \"call_minute_charge\": 0.09,\n    \"start_reduce_time\": \"{{fare_start_reduce_time}}\",\n    \"end_reduce_time\": \"{{fare_end_reduce_time}}\",\n    \"reduced_standing_charge\": 0.32,\n    \"reduced_call_minute_charge\": 0.0,\n    \"starts_at\": \"{{fare_starts_at}}\"\n}\n"
+					"raw": "{\n    \"standing_charge\": 0.36,\n    \"call_minute_charge\": 0.09,\n    \"start_reduce_time\": \"{{fare_start_reduce_time}}\",\n    \"end_reduce_time\": \"{{fare_end_reduce_time}}\",\n    \"reduced_standing_charge\": 0.36,\n    \"reduced_call_minute_charge\": 0.0,\n    \"starts_at\": \"{{fare_starts_at}}\"\n}\n"
 				},
 				"url": {
 					"raw": "{{url}}/api/v1/fares",
@@ -266,7 +1404,7 @@
 					}
 				],
 				"url": {
-					"raw": "{{url}}/api/v1/bills/99 99 7438 822?month=12&year=2018",
+					"raw": "{{url}}/api/v1/bills/99 98852 6423?month=12&year=2017",
 					"host": [
 						"{{url}}"
 					],
@@ -274,7 +1412,7 @@
 						"api",
 						"v1",
 						"bills",
-						"99 99 7438 822"
+						"99 98852 6423"
 					],
 					"query": [
 						{
@@ -283,7 +1421,7 @@
 						},
 						{
 							"key": "year",
-							"value": "2018"
+							"value": "2017"
 						}
 					]
 				}
