@@ -1,8 +1,10 @@
+import copy
 import datetime
 
 import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm.session import make_transient
 
 import model
 import service
@@ -88,3 +90,50 @@ def test_should_keep_same_db_id_when_create_end_and_start_call_in_sequence(db_fa
     assert call_from_db.id == start_call_model.id == end_call_model.id
     assert call_from_db.call_id == start_call_model.call_id == end_call_model.call_id
     assert_start_end_values(call_from_db, start_call, end_call)
+
+
+def test_phone_bill_report(db_fare, call_model_builder):
+    model_service = ModelService(db_fare)
+    current_fare = model_service.load_current_fare()
+    for i in range(3):
+        call_model = call_model_builder.build()
+        call_model.call_id = i
+        call_model.fare = current_fare
+        db_fare.add(call_model)
+        db_fare.commit()
+
+    report = model_service.billing_report('9990909090', 2, 1984)
+    assert len(report['calls']) == 3
+    assert report['total_price'] == 'R$ 1.62'
+    assert report['total_duration'] == '00h06m54s'
+
+
+def test_should_throws_invalid_billing_period_when_month_is_not_closed(db_fare):
+    model_service = ModelService(db_fare)
+    today = datetime.date.today()
+    with pytest.raises(service.InvalidBillingPeriod):
+        model_service.billing_report('9990909090', today.month, today.year)
+
+
+def test_should_ignore_open_calls_in_phone_bill_report(db_fare, call_model_builder):
+    model_service = ModelService(db_fare)
+    current_fare = model_service.load_current_fare()
+    call_model1 = call_model_builder.build()
+    call_model1.fare = current_fare
+    call_model2 = call_model_builder.build()
+    call_model2.call_id += 1
+    call_model2.start_timestamp = None
+    call_model2.fare = current_fare
+    call_model3 = call_model_builder.build()
+    call_model3.call_id += 2
+    call_model3.end_timestamp = None
+    call_model3.fare = current_fare
+    db_fare.add(call_model1)
+    db_fare.add(call_model2)
+    db_fare.add(call_model3)
+    db_fare.commit()
+
+    report = model_service.billing_report('9990909090', 2, 1984)
+    assert len(report['calls']) == 1
+    assert report['total_price'] == 'R$ 0.54'
+    assert report['total_duration'] == '00h02m18s'

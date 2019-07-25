@@ -1,5 +1,6 @@
 import datetime
 
+import dateutil
 from sqlalchemy import and_
 
 import model
@@ -43,7 +44,7 @@ class ModelService:
             if month == current_month.month and year == current_month.year:
                 raise InvalidBillingPeriod('The reference period is not ended yet.')
             else:
-                current_month = datetime.date(year, month, 1)
+                current_month = datetime.date(year, month, 1) + dateutil.relativedelta.relativedelta(months=+1)
 
         last_month = current_month - datetime.timedelta(days=1)
         last_month = last_month.replace(day=1)
@@ -53,6 +54,7 @@ class ModelService:
         first_day, first_day_next_month = self._define_billing_period(month, year)
         query = self.db.query(model.Call)
         query = query.filter(model.Call.origin_phone == phone)
+        query = query.filter(model.Call.start_timestamp != None)
         query = query.filter(and_(model.Call.end_timestamp >= first_day,
                                   model.Call.end_timestamp < first_day_next_month))
         calls = query.all()
