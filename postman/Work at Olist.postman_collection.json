@@ -228,6 +228,67 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Load Bills",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "4c84ba69-3c40-4b87-ac4e-a3dfc8cd9657",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "5a89fd1e-899d-4a6b-998c-b34bd941f2ff",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/api/v1/bills/99 99 7438 822?month=12&year=2018",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"bills",
+						"99 99 7438 822"
+					],
+					"query": [
+						{
+							"key": "month",
+							"value": "12"
+						},
+						{
+							"key": "year",
+							"value": "2018"
+						}
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }

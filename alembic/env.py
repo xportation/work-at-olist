@@ -1,7 +1,7 @@
 import os
 from logging.config import fileConfig
 
-from sqlalchemy import engine_from_config
+from sqlalchemy import engine_from_config, create_engine
 from sqlalchemy import pool
 
 from alembic import context
@@ -27,6 +27,10 @@ target_metadata = model.Base.metadata
 # ... etc.
 
 
+def get_url():
+    return os.getenv('DATABASE_URL')
+
+
 def run_migrations_offline():
     """Run migrations in 'offline' mode.
 
@@ -39,15 +43,9 @@ def run_migrations_offline():
     script output.
 
     """
-    url = config.get_main_option("sqlalchemy.url")
-
-    # database_url = os.environ.get('DATABASE_URL', None)
-    # if database_url:
-    #     url = database_url
-
+    url = get_url()
     context.configure(
-        url=url, target_metadata=target_metadata, literal_binds=True
-    )
+        url=url, target_metadata=target_metadata, literal_binds=True)
 
     with context.begin_transaction():
         context.run_migrations()
@@ -60,19 +58,12 @@ def run_migrations_online():
     and associate a connection with the context.
 
     """
-    configuration = config.get_section(config.config_ini_section)
-    # database_url = os.environ.get('DATABASE_URL', None)
-    # if database_url:
-    #     configuration['sqlalchemy.url'] = database_url
-    connectable = engine_from_config(
-        configuration,
-        prefix="sqlalchemy.",
-        poolclass=pool.NullPool,
-    )
+    connectable = create_engine(get_url())
 
     with connectable.connect() as connection:
         context.configure(
-            connection=connection, target_metadata=target_metadata
+            connection=connection,
+            target_metadata=target_metadata
         )
 
         with context.begin_transaction():
