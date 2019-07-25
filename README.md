@@ -45,6 +45,9 @@ python app.py
 The deploy is done directly from the Heroku app connect to my repository  
 https://workatolist-lvs.herokuapp.com
 
+## Api Docs ##
+https://documenter.getpostman.com/view/852920/SVYjT2GU?version=latest
+
 ## Work Environment ##
 1. SO: macOS 10.14.5  
 1. IDE: Pycharm Professional 2019.1.3  
