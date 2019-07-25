@@ -21,6 +21,12 @@ class ModelService:
         self.db = db
 
     def register_call(self, call_record):
+        """
+        Register call from record. Search for existing call_id and update if found.
+        Add the current fare for new calls
+        :param call_record:
+        :return: Call
+        """
         call_model = self.db.query(model.Call).filter_by(call_id=call_record['call_id']).first()
         if not call_model:
             call_model = model.Call()
@@ -30,6 +36,10 @@ class ModelService:
         return call_model
 
     def load_current_fare(self):
+        """
+        Load the current fare
+        :return: Fare
+        """
         fare_model = self.db.query(model.Fare).\
             filter(model.Fare.starts_at <= datetime.datetime.utcnow()).\
             order_by(model.Fare.starts_at.desc()).limit(1).first()
@@ -51,6 +61,16 @@ class ModelService:
         return last_month, current_month
 
     def billing_report(self, phone, month, year):
+        """
+        Generate the billing report for the phone
+        :param phone:
+        :param month:
+        :param year:
+        :return: dict:
+            - calls: list
+            - total_price
+            - total_duration
+        """
         first_day, first_day_next_month = self._define_billing_period(month, year)
         query = self.db.query(model.Call)
         query = query.filter(model.Call.origin_phone == phone)
