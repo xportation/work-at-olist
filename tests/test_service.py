@@ -116,6 +116,7 @@ def test_should_throws_invalid_billing_period_when_month_is_not_closed(db_fare):
 
 
 def test_should_ignore_open_calls_in_phone_bill_report(db_fare, call_model_builder):
+    db_fare.query(model.Call).delete()
     model_service = ModelService(db_fare)
     current_fare = model_service.load_current_fare()
     call_model1 = call_model_builder.build()
